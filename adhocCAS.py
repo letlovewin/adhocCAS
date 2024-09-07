@@ -74,12 +74,23 @@ def nthPartialDerivative(f,n,p,wrt): #WARNING!!! THIS ALGORITHM IS QUITE SLOW. I
         print("wrt must be > 0")
         return None
     if n == 1:
-        return nthPartialDerivative(f,n-1,p,wrt)
+        return partialDerivative(f,p,wrt)
     newPoint1 = p.copy()
     newPoint1[wrt-1] += epsilon
     newPoint2 = p.copy()
     newPoint2[wrt-1] -= epsilon
-    return (nthPartialDerivative(f,n-1,newPoint1)+nthDerivative(f,n-1,x-newPoint2))/2*epsilon
+    return (nthPartialDerivative(f,n-1,newPoint1,wrt)+nthPartialDerivative(f,n-1,newPoint2,wrt))/2*epsilon
+
+def partialDerivativeMixedVariables(f,p,wrt):
+    if len(wrt) <= 1:
+        return partialDerivative(f,p,wrt[0])
+    newPoint1 = p.copy()
+    newPoint1[-1] += epsilon
+    newPoint2 = p.copy()
+    newPoint2[-1] -= epsilon
+    return (partialDerivativeMixedVariables(f,newPoint1,wrt[0:len(wrt)-1])+partialDerivativeMixedVariables(f,newPoint2,wrt[0:len(wrt)-1]))/2*epsilon
+
+print(partialDerivativeMixedVariables(lambda x: 3*x[0]*x[1] + x[1]*x[0],[2,2],[2,1]))
 
 def gradient(f,p):
     r = []
@@ -134,3 +145,4 @@ def doubleIntegral(f,U):
             I += p1*(delta_x)*(delta_y)
 
     return I
+
